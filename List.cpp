@@ -15,7 +15,6 @@ void List<T>::FreeMemory() {
     do {
         Delete(0);
     } while (head != nullptr);
-
 }
 
 template<typename T>
@@ -266,6 +265,10 @@ void List<T>::Balance() {
 template <typename T>
 void List<T>::ListPrintBack() { //учесть случай, когда список пустой
     Node<T>* cur = head;
+    if (IsEmpty()) {
+        cout << "List is empty";
+        return;
+    }
     do {
         cur = cur->prev;
         cur->NodePrint();
@@ -279,8 +282,9 @@ void List<T>::SaveToBin(ofstream& f) {
     {
         Node<T>* cur = head;
         do {
+            f.write((char*)&cur->ar_sz, sizeof(int));
             for (int i = 0; i < cur->ar_sz; i++) {
-                f.write((char*)&cur->data[i], sizeof(T*));
+                f.write((char*)&(*(cur->data[i])), sizeof(T));
             }
             cur = cur->next;
         } while (cur != head);
@@ -289,22 +293,23 @@ void List<T>::SaveToBin(ofstream& f) {
 
 template <typename T>
 void List<T>::LoadFromBin(ifstream& f) {
-    T* temp;
     if (f.peek() == std::ifstream::traits_type::eof()) {
         cout << "! The file is empty. Save something there first\n\n";
-        return;
+       // return;
     }
     if (f.is_open()) {
+        T* temp;
+        int sz;
         if (head != nullptr)
             FreeMemory();
-        head = nullptr;
-        f.seekg(0, ios::end);
-        long long size1 = f.tellg();
-        f.seekg(0, ios::beg);
-        while (f.tellg() != size1) {
-            temp = new T;
-            f.read((char*)&temp, sizeof(T*));
-            Add2(*temp);
+        while (f.peek()!=EOF) {
+            f.read((char*)&sz, sizeof(int));
+            temp = new T[sz];
+            for(int i = 0; i<sz;i++) {
+                f.read((char *) &temp[i], sizeof(T));
+                Add2(temp[i]);
+            }
         }
     }
+
 }

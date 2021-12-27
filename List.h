@@ -21,7 +21,7 @@ public:
     Node<T>* Min(Node<T>* p, int& pos);
     T* Delete(int pos);
     void SaveToBin(ofstream& f);
-    void LoadFromBin(ifstream& f);
+   void LoadFromBin(ifstream& f);
 private:
     Node<T>* head;
     int list_sz;

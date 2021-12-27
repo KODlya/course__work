@@ -6,7 +6,6 @@
 using namespace std;
 
 void MenuPoints() {
-    // system("cls");
     cout << "\t************************************\n";
     cout << "\t*  [1] - Add new element           *\n";
     cout << "\t*  [2] - Insert by logical number  *\n";
@@ -25,8 +24,8 @@ void MenuPoints() {
 }
 
 void menu() {
-    List <string> a;
-    string* str;
+    List <int> a;
+    int* str;
     ofstream f;
     ifstream f1;
     int pos = 0;
@@ -39,14 +38,14 @@ void menu() {
         switch (x) {
             case 1: {
                 cout << "Enter string\n";
-                str = new string;
+                str = new int;
                 cin >> *str;
                 a.Add2(*str);
                 break;
             }
             case 2: {
                 cout << "Enter string\n";
-                str = new string;
+                str = new int;
                 cin >> *str;
                 cout << "Enter logical number\n";
                 cin >> pos;
@@ -76,7 +75,7 @@ void menu() {
             }
             case 6: {
                 cout << "Enter string\n";
-                str = new string;
+                str = new int;
                 cin >> *str;
                 a.InSort(str);
                 break;
@@ -89,34 +88,31 @@ void menu() {
             }
 
             case 8: {
-                f.open("..\\text.dat");
-                if (!f.is_open())
-                    cerr << "File open error\n";
-                else {
-                    a.SaveToBin(f);
-                    f.close();
+                ofstream fileOut;
+                fileOut.open("..\\text.dat");
+                a.SaveToBin(fileOut);
+                fileOut.close();
                     break;
                 }
 
-            }
-
             case 9: {
-                f1.open("..\\text.dat");
-                if (!f1.is_open())
-                    cerr << "File open error\n";
-                else {
-                    a.LoadFromBin(f1);
-                    f1.close();
+                ifstream fileIn;
+                fileIn.open("..\\text.dat", ios::in | ios::binary);
+                if (fileIn.peek() == std::ifstream::traits_type::eof()) {
+                    cout << "! The file is empty. Save something there first\n\n";
+                } else {
+                    if (fileIn.is_open()) {
+                        a.LoadFromBin(fileIn);
+                    }
                 }
+                fileIn.close();
                 break;
             }
             case 10: {
-                //system("cls");
                 a.ListPrint();
                 break;
             }
             case 11: {
-                //system("cls");
                 a.ListPrintBack();
                 break;
             }
@@ -134,9 +130,6 @@ void menu() {
         if (flag == 0)
             break;
     }
-
-
-
 }
 int main() {
     menu();
